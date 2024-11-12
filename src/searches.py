@@ -75,6 +75,8 @@ class Searches:
         return pointsCounter
 
     def bingSearch(self, word: str):
+        hasOccurredError = False
+        bingAccountPoints = 0
         while True:
             try:
                 self.webdriver.get("https://bing.com")
@@ -82,9 +84,23 @@ class Searches:
                 searchbar = self.webdriver.find_element(By.ID, "sb_form_q")
                 searchbar.send_keys(word)
                 searchbar.submit()
-                time.sleep(random.randint(10, 15))
-                return self.browser.utils.getBingAccountPoints()
+                if not hasOccurredError:
+                    time.sleep(
+                        random.randint(
+                            random.randint(120, 135), random.randint(135, 150)
+                        )
+                    )
+                bingAccountPoints = self.browser.utils.getBingAccountPoints()
+                hasOccurredError = False
+                return bingAccountPoints
             except TimeoutException:
+                hasOccurredError = True
                 logging.error("[BING] " + "Timeout, retrying in 5 seconds...")
+                time.sleep(5)
+                continue
+            except Exception as ex:
+                hasOccurredError = True
+                logging.error("[BING] " + "Unknown error, retrying in 5 seconds...")
+                print(ex)
                 time.sleep(5)
                 continue
