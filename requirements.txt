@@ -1,5 +1,7 @@
+#Using a old version of setuptools, since ipapi and undetected-chromedriver is breaking using newest version
+setuptools==65.5.1
 requests
 selenium
 ipapi
 undetected-chromedriver
-selenium-wire
+selenium-wire>=4.26.1 
