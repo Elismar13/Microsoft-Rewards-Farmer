@@ -6,7 +6,9 @@ from datetime import date, timedelta
 
 import requests
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 from src.browser import Browser
 
@@ -104,4 +106,21 @@ class Searches:
                 logging.error("[BING] " + "Unknown error, retrying in 5 seconds...")
                 print(ex)
                 time.sleep(5)
-                continue
+
+                try:
+                    for i in range(3):
+                        logging.debug("[BING] " + "Stopping page refresh...")
+                        self.stop_loading(self.webdriver)
+                        time.sleep(1)
+
+                        logging.debug("[BING] " + "Reloading page...")
+                        self.webdriver.refresh()
+                        time.sleep(2)
+                except Exception as ex:
+                    print(ex)
+                finally:
+                    continue
+
+    def stop_loading(self, driver):
+        action = ActionChains(driver)
+        action.send_keys(Keys.ESCAPE).perform()
